@@ -70,7 +70,7 @@ BLEComm采用C#编写，基于.Net 4.5.2框架，支持Windows10以上64位操�
 
 软件示意图：
 
-![](./image/sw.pg)
+![](./image/sw.jpg)
 
 ### 1.设备搜索区
 
