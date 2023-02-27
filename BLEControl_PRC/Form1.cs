@@ -513,7 +513,7 @@ namespace BLEControl
                 try
                 {
                     byte[] data;
-                    CryptographicBuffer.CopyToByteArray(ble_result, out data);
+                    CryptographicBuffer.CopyToByteArray(result, out data);
                     txt_UTF8Result.Text = Encoding.UTF8.GetString(data);
                 }
                 catch
@@ -523,7 +523,7 @@ namespace BLEControl
                 try
                 {
                     byte[] data;
-                    CryptographicBuffer.CopyToByteArray(ble_result, out data);
+                    CryptographicBuffer.CopyToByteArray(result, out data);
                     txt_HexResult.Text = BitConverter.ToString(data, 0).Replace("-", " ").ToUpper();
                 }
                 catch
@@ -533,7 +533,7 @@ namespace BLEControl
                 try
                 {
                     byte[] data;
-                    CryptographicBuffer.CopyToByteArray(ble_result, out data);
+                    CryptographicBuffer.CopyToByteArray(result, out data);
                     if (data.Length == 1) txt_DecResult.Text = data[0].ToString();
                     if (data.Length == 2) txt_DecResult.Text = BitConverter.ToInt16(data, 0).ToString();
                     if (data.Length == 4) txt_DecResult.Text = BitConverter.ToInt32(data, 0).ToString();
