@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+<S_ITEMS xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+  <items>
+    <string>GenericAttribute</string>
+    <string>GenericAccess</string>
+    <string>DeviceInformation</string>
+    <string>Battery</string>
+    <string>HumanInterfaceDevice</string>
+    <string>65281</string>
+  </items>
+</S_ITEMS>
