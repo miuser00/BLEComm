@@ -51,6 +51,8 @@ namespace BLEControl
         GattCharacteristic ble_Characteristic = null;
         //上一个BLE属性
         GattCharacteristic last_ble_Characteristic = null;
+        //订阅的Notify或IndicateBLE属性
+        GattCharacteristic callback_Characteristic = null;
         //数据格式
         GattPresentationFormat presentationFormat;
         //数据结果
@@ -279,6 +281,8 @@ namespace BLEControl
 
         private void btn_pair_Click(object sender, EventArgs e)
         {
+            //解除上一个设备的回调
+            UnhookNotify();
             if (last_ble_Device!=null)
             {
                 last_ble_Device.ConnectionStatusChanged -= CurrentDevice_ConnectionStatusChanged;
@@ -483,10 +487,10 @@ namespace BLEControl
 
         private void Characteristic_ValueChanged(GattCharacteristic sender, GattValueChangedEventArgs args)
         {
-
+            if (callback_Characteristic == null) return;
             // BT_Code: An Indicate or Notify reported that the value has changed.
             // Display the new value with a timestamp.
-            GattCharacteristicProperties properties = ble_Characteristic.CharacteristicProperties;
+                GattCharacteristicProperties properties = callback_Characteristic.CharacteristicProperties;
             if (properties.HasFlag(GattCharacteristicProperties.Indicate))
             {
                 log("收到Indicate通知");
@@ -513,7 +517,7 @@ namespace BLEControl
                 try
                 {
                     byte[] data;
-                    CryptographicBuffer.CopyToByteArray(ble_result, out data);
+                    CryptographicBuffer.CopyToByteArray(result, out data);
                     txt_UTF8Result.Text = Encoding.UTF8.GetString(data);
                 }
                 catch
@@ -523,7 +527,7 @@ namespace BLEControl
                 try
                 {
                     byte[] data;
-                    CryptographicBuffer.CopyToByteArray(ble_result, out data);
+                    CryptographicBuffer.CopyToByteArray(result, out data);
                     txt_HexResult.Text = BitConverter.ToString(data, 0).Replace("-", " ").ToUpper();
                 }
                 catch
@@ -533,7 +537,7 @@ namespace BLEControl
                 try
                 {
                     byte[] data;
-                    CryptographicBuffer.CopyToByteArray(ble_result, out data);
+                    CryptographicBuffer.CopyToByteArray(result, out data);
                     if (data.Length == 1) txt_DecResult.Text = data[0].ToString();
                     if (data.Length == 2) txt_DecResult.Text = BitConverter.ToInt16(data, 0).ToString();
                     if (data.Length == 4) txt_DecResult.Text = BitConverter.ToInt32(data, 0).ToString();
@@ -567,10 +571,10 @@ namespace BLEControl
         }
         private async void UnhookNotify()
         {
-            if (last_ble_Characteristic == null) return;
-            GattCharacteristicProperties last_properties = last_ble_Characteristic.CharacteristicProperties;
+            if (callback_Characteristic == null) return;
+            GattCharacteristicProperties callback_properties = callback_Characteristic.CharacteristicProperties;
             //特征支持Nodify或者Indicate属性
-            if (last_properties.HasFlag(GattCharacteristicProperties.Notify) || last_properties.HasFlag(GattCharacteristicProperties.Indicate))
+            if (callback_properties.HasFlag(GattCharacteristicProperties.Notify) || callback_properties.HasFlag(GattCharacteristicProperties.Indicate))
             {
                 //解除上一个属性的Notify和Indicate
                 try
@@ -579,13 +583,13 @@ namespace BLEControl
                     // We receive them in the ValueChanged event handler.
                     // Note that this sample configures either Indicate or Notify, but not both.
                     var result = await
-                            last_ble_Characteristic.WriteClientCharacteristicConfigurationDescriptorAsync(
+                            callback_Characteristic.WriteClientCharacteristicConfigurationDescriptorAsync(
                                 GattClientCharacteristicConfigurationDescriptorValue.None);
                     if (result == GattCommunicationStatus.Success)
                     {
-                        last_ble_Characteristic.ValueChanged -= Characteristic_ValueChanged;
+                        callback_Characteristic.ValueChanged -= Characteristic_ValueChanged;
                     }
-
+                    callback_Characteristic = null;
                 }
                 catch (Exception ex)
                 {
@@ -597,10 +601,16 @@ namespace BLEControl
         //为蓝牙的characteristic设置回调使能和回调函数
         private async void HookNotify()
         {
+            if (ble_Characteristic == null) return;
             GattCharacteristicProperties properties = ble_Characteristic.CharacteristicProperties;
             //特征支持Nodify或者Indicate属性
             if (properties.HasFlag(GattCharacteristicProperties.Notify) || properties.HasFlag(GattCharacteristicProperties.Indicate))
             {
+                callback_Characteristic = ble_Characteristic;
+                txt_callback_service.Text = cmb_service.Text;
+                txt_callback_characteristic.Text = cmb_characteristic.Text;
+                cb_display_callbackData.Checked = true;
+
                 // initialize status
                 GattCommunicationStatus status = GattCommunicationStatus.Unreachable;
                 var cccdValue = GattClientCharacteristicConfigurationDescriptorValue.None;
@@ -618,7 +628,7 @@ namespace BLEControl
                 {
                     //设置回调使能
                     // BT_Code: Must write the CCCD in order for server to send indications.
-                    status = await ble_Characteristic.WriteClientCharacteristicConfigurationDescriptorAsync(cccdValue);
+                    status = await callback_Characteristic.WriteClientCharacteristicConfigurationDescriptorAsync(cccdValue);
 
                     if (status == GattCommunicationStatus.Success)
                     {
@@ -647,8 +657,7 @@ namespace BLEControl
             txt_UTF8Result.Text = "";
             if (ble_Characteristic != null)
             {
-                //解除上一个设备的回调
-                UnhookNotify();
+
                 try
                 {
                     // Get all the child descriptors of a characteristics. 
@@ -709,6 +718,7 @@ namespace BLEControl
         //读取charactistic的值
         private async void btn_Read_Click(object sender, EventArgs e)
         {
+            BlinkControl(this.btn_Read);
             log("正在读取数据");
             if (ble_Characteristic == null) return;
             txt_DecResult.Text = "";
@@ -750,6 +760,11 @@ namespace BLEControl
                 {
                     byte[] data;
                     CryptographicBuffer.CopyToByteArray(ble_result, out data);
+                    if (data == null)
+                    {
+                        log("不存在要被读取的数据");
+                        return;
+                    }
                     if (data.Length == 1) txt_DecResult.Text = data[0].ToString();
                     if (data.Length == 2) txt_DecResult.Text = BitConverter.ToInt16(data, 0).ToString();
                     if (data.Length == 4) txt_DecResult.Text = BitConverter.ToInt32(data, 0).ToString();
@@ -887,9 +902,11 @@ namespace BLEControl
 
         private void Form1_Shown(object sender, EventArgs e)
         {
-            MSerialization.MSaveControl.Load_All_SupportedControls(this.Controls);
+            //MSerialization.MSaveControl.Load_All_SupportedControls(this.Controls);
             txt_deviceID.Text = "";
             txt_devicename.Text = "";
+            txt_callback_service.Text = "";
+            txt_callback_characteristic.Text = "";
             txt_rssi.Text = "";
             lab_connection.ForeColor = Color.Gray;
         }
@@ -958,6 +975,23 @@ namespace BLEControl
         private void status_text_Click(object sender, EventArgs e)
         {
             Process.Start("https://www.miuser.net/385.html");
+        }
+
+        private void groupBox4_Enter(object sender, EventArgs e)
+        {
+
+        }
+
+        private void cb_display_callbackData_Click(object sender, EventArgs e)
+        {
+            if (cb_display_callbackData.Checked)
+            {
+                HookNotify();
+            }
+            else
+            {
+                UnhookNotify();
+            }
         }
     }
 

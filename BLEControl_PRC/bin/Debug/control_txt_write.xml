@@ -1,10 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <S_ITEMS xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <items>
-    <string>steer,0</string>
-    <string>steer,90</string>
-    <string>steer,180</string>
-    <string />
-    <string>FF FF</string>
-  </items>
+  <items />
 </S_ITEMS>

@@ -68,6 +68,12 @@
             this.groupBox5 = new System.Windows.Forms.GroupBox();
             this.rtb_debug = new System.Windows.Forms.RichTextBox();
             this.groupBox6 = new System.Windows.Forms.GroupBox();
+            this.groupBox9 = new System.Windows.Forms.GroupBox();
+            this.txt_callback_service = new System.Windows.Forms.TextBox();
+            this.cb_display_callbackData = new System.Windows.Forms.CheckBox();
+            this.label5 = new System.Windows.Forms.Label();
+            this.label4 = new System.Windows.Forms.Label();
+            this.txt_callback_characteristic = new System.Windows.Forms.TextBox();
             this.pan_read = new System.Windows.Forms.Panel();
             this.btn_Read = new System.Windows.Forms.Button();
             this.lab_Indicate = new System.Windows.Forms.Label();
@@ -86,7 +92,6 @@
             this.txt_DecResult = new System.Windows.Forms.TextBox();
             this.rad_dec = new System.Windows.Forms.RadioButton();
             this.groupBox7 = new System.Windows.Forms.GroupBox();
-            this.panel11 = new System.Windows.Forms.Panel();
             this.pan_write = new System.Windows.Forms.Panel();
             this.txt_write = new System.Windows.Forms.ComboBox();
             this.panel9 = new System.Windows.Forms.Panel();
@@ -117,6 +122,7 @@
             this.groupBox4.SuspendLayout();
             this.groupBox5.SuspendLayout();
             this.groupBox6.SuspendLayout();
+            this.groupBox9.SuspendLayout();
             this.pan_read.SuspendLayout();
             this.pan_hex.SuspendLayout();
             this.pan_utf8.SuspendLayout();
@@ -426,9 +432,10 @@
             this.groupBox4.Dock = System.Windows.Forms.DockStyle.Bottom;
             this.groupBox4.Location = new System.Drawing.Point(0, 256);
             this.groupBox4.Name = "groupBox4";
-            this.groupBox4.Size = new System.Drawing.Size(858, 54);
+            this.groupBox4.Size = new System.Drawing.Size(858, 48);
             this.groupBox4.TabIndex = 24;
             this.groupBox4.TabStop = false;
+            this.groupBox4.Enter += new System.EventHandler(this.groupBox4_Enter);
             // 
             // btn_getData
             // 
@@ -492,9 +499,9 @@
             // 
             this.groupBox5.Controls.Add(this.rtb_debug);
             this.groupBox5.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.groupBox5.Location = new System.Drawing.Point(0, 550);
+            this.groupBox5.Location = new System.Drawing.Point(0, 588);
             this.groupBox5.Name = "groupBox5";
-            this.groupBox5.Size = new System.Drawing.Size(858, 144);
+            this.groupBox5.Size = new System.Drawing.Size(858, 106);
             this.groupBox5.TabIndex = 25;
             this.groupBox5.TabStop = false;
             this.groupBox5.Text = "Log记录";
@@ -507,12 +514,13 @@
             this.rtb_debug.Location = new System.Drawing.Point(3, 17);
             this.rtb_debug.Name = "rtb_debug";
             this.rtb_debug.ReadOnly = true;
-            this.rtb_debug.Size = new System.Drawing.Size(852, 124);
+            this.rtb_debug.Size = new System.Drawing.Size(852, 86);
             this.rtb_debug.TabIndex = 11;
             this.rtb_debug.Text = "";
             // 
             // groupBox6
             // 
+            this.groupBox6.Controls.Add(this.groupBox9);
             this.groupBox6.Controls.Add(this.pan_read);
             this.groupBox6.Controls.Add(this.panel16);
             this.groupBox6.Controls.Add(this.pan_hex);
@@ -523,10 +531,70 @@
             this.groupBox6.Dock = System.Windows.Forms.DockStyle.Top;
             this.groupBox6.Location = new System.Drawing.Point(3, 17);
             this.groupBox6.Name = "groupBox6";
-            this.groupBox6.Size = new System.Drawing.Size(852, 159);
+            this.groupBox6.Size = new System.Drawing.Size(852, 206);
             this.groupBox6.TabIndex = 26;
             this.groupBox6.TabStop = false;
             this.groupBox6.Text = "读取";
+            // 
+            // groupBox9
+            // 
+            this.groupBox9.Controls.Add(this.txt_callback_service);
+            this.groupBox9.Controls.Add(this.cb_display_callbackData);
+            this.groupBox9.Controls.Add(this.label5);
+            this.groupBox9.Controls.Add(this.label4);
+            this.groupBox9.Controls.Add(this.txt_callback_characteristic);
+            this.groupBox9.Dock = System.Windows.Forms.DockStyle.Top;
+            this.groupBox9.Location = new System.Drawing.Point(3, 155);
+            this.groupBox9.Name = "groupBox9";
+            this.groupBox9.Size = new System.Drawing.Size(846, 50);
+            this.groupBox9.TabIndex = 45;
+            this.groupBox9.TabStop = false;
+            this.groupBox9.Text = "订阅特征";
+            // 
+            // txt_callback_service
+            // 
+            this.txt_callback_service.Location = new System.Drawing.Point(41, 20);
+            this.txt_callback_service.Name = "txt_callback_service";
+            this.txt_callback_service.ReadOnly = true;
+            this.txt_callback_service.Size = new System.Drawing.Size(272, 21);
+            this.txt_callback_service.TabIndex = 6;
+            // 
+            // cb_display_callbackData
+            // 
+            this.cb_display_callbackData.AutoSize = true;
+            this.cb_display_callbackData.Location = new System.Drawing.Point(656, 20);
+            this.cb_display_callbackData.Name = "cb_display_callbackData";
+            this.cb_display_callbackData.Size = new System.Drawing.Size(180, 16);
+            this.cb_display_callbackData.TabIndex = 44;
+            this.cb_display_callbackData.Text = "在读取栏显示订阅特征的数据";
+            this.cb_display_callbackData.UseVisualStyleBackColor = true;
+            this.cb_display_callbackData.Click += new System.EventHandler(this.cb_display_callbackData_Click);
+            // 
+            // label5
+            // 
+            this.label5.AutoSize = true;
+            this.label5.Location = new System.Drawing.Point(328, 24);
+            this.label5.Name = "label5";
+            this.label5.Size = new System.Drawing.Size(29, 12);
+            this.label5.TabIndex = 4;
+            this.label5.Text = "特征";
+            // 
+            // label4
+            // 
+            this.label4.AutoSize = true;
+            this.label4.Location = new System.Drawing.Point(10, 24);
+            this.label4.Name = "label4";
+            this.label4.Size = new System.Drawing.Size(29, 12);
+            this.label4.TabIndex = 5;
+            this.label4.Text = "服务";
+            // 
+            // txt_callback_characteristic
+            // 
+            this.txt_callback_characteristic.Location = new System.Drawing.Point(363, 20);
+            this.txt_callback_characteristic.Name = "txt_callback_characteristic";
+            this.txt_callback_characteristic.ReadOnly = true;
+            this.txt_callback_characteristic.Size = new System.Drawing.Size(272, 21);
+            this.txt_callback_characteristic.TabIndex = 7;
             // 
             // pan_read
             // 
@@ -537,7 +605,7 @@
             this.pan_read.Dock = System.Windows.Forms.DockStyle.Top;
             this.pan_read.Location = new System.Drawing.Point(3, 120);
             this.pan_read.Name = "pan_read";
-            this.pan_read.Size = new System.Drawing.Size(846, 30);
+            this.pan_read.Size = new System.Drawing.Size(846, 35);
             this.pan_read.TabIndex = 39;
             // 
             // btn_Read
@@ -576,7 +644,7 @@
             this.panel18.Dock = System.Windows.Forms.DockStyle.Right;
             this.panel18.Location = new System.Drawing.Point(835, 0);
             this.panel18.Name = "panel18";
-            this.panel18.Size = new System.Drawing.Size(11, 30);
+            this.panel18.Size = new System.Drawing.Size(11, 35);
             this.panel18.TabIndex = 39;
             // 
             // panel16
@@ -698,23 +766,14 @@
             // 
             // groupBox7
             // 
-            this.groupBox7.Controls.Add(this.panel11);
             this.groupBox7.Controls.Add(this.pan_write);
             this.groupBox7.Dock = System.Windows.Forms.DockStyle.Top;
-            this.groupBox7.Location = new System.Drawing.Point(3, 176);
+            this.groupBox7.Location = new System.Drawing.Point(3, 223);
             this.groupBox7.Name = "groupBox7";
-            this.groupBox7.Size = new System.Drawing.Size(852, 55);
+            this.groupBox7.Size = new System.Drawing.Size(852, 87);
             this.groupBox7.TabIndex = 32;
             this.groupBox7.TabStop = false;
             this.groupBox7.Text = "写入";
-            // 
-            // panel11
-            // 
-            this.panel11.Dock = System.Windows.Forms.DockStyle.Right;
-            this.panel11.Location = new System.Drawing.Point(839, 47);
-            this.panel11.Name = "panel11";
-            this.panel11.Size = new System.Drawing.Size(10, 5);
-            this.panel11.TabIndex = 28;
             // 
             // pan_write
             // 
@@ -808,9 +867,9 @@
             this.groupBox1.Controls.Add(this.groupBox7);
             this.groupBox1.Controls.Add(this.groupBox6);
             this.groupBox1.Dock = System.Windows.Forms.DockStyle.Bottom;
-            this.groupBox1.Location = new System.Drawing.Point(0, 310);
+            this.groupBox1.Location = new System.Drawing.Point(0, 304);
             this.groupBox1.Name = "groupBox1";
-            this.groupBox1.Size = new System.Drawing.Size(858, 240);
+            this.groupBox1.Size = new System.Drawing.Size(858, 284);
             this.groupBox1.TabIndex = 21;
             this.groupBox1.TabStop = false;
             // 
@@ -962,7 +1021,7 @@
             this.Controls.Add(this.ss_bottom);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.Name = "Form1";
-            this.Text = "BLEComm v0.23a";
+            this.Text = "BLEComm v0.3";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
             this.Shown += new System.EventHandler(this.Form1_Shown);
@@ -978,6 +1037,8 @@
             this.groupBox4.PerformLayout();
             this.groupBox5.ResumeLayout(false);
             this.groupBox6.ResumeLayout(false);
+            this.groupBox9.ResumeLayout(false);
+            this.groupBox9.PerformLayout();
             this.pan_read.ResumeLayout(false);
             this.pan_hex.ResumeLayout(false);
             this.pan_hex.PerformLayout();
@@ -1058,7 +1119,6 @@
         private System.Windows.Forms.Button btn_Write;
         private System.Windows.Forms.Panel panel10;
         private System.Windows.Forms.GroupBox groupBox1;
-        private System.Windows.Forms.Panel panel11;
         private System.Windows.Forms.RadioButton rad_writeDec;
         private System.Windows.Forms.RadioButton rad_writeUTF8;
         private System.Windows.Forms.RadioButton rad_writeHex;
@@ -1078,6 +1138,12 @@
         private System.Windows.Forms.TextBox txt_rssi;
         private System.Windows.Forms.Button btn_pair;
         private System.Windows.Forms.Panel panel2;
+        private System.Windows.Forms.CheckBox cb_display_callbackData;
+        private System.Windows.Forms.TextBox txt_callback_characteristic;
+        private System.Windows.Forms.TextBox txt_callback_service;
+        private System.Windows.Forms.Label label4;
+        private System.Windows.Forms.Label label5;
+        private System.Windows.Forms.GroupBox groupBox9;
     }
 }
 

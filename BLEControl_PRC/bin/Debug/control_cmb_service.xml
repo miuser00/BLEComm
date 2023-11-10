@@ -1,11 +1,4 @@
 <?xml version="1.0" encoding="utf-8"?>
 <S_ITEMS xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
-  <items>
-    <string>GenericAccess</string>
-    <string>GenericAttribute</string>
-    <string>DeviceInformation</string>
-    <string>Battery</string>
-    <string>ScanParameters</string>
-    <string>HumanInterfaceDevice</string>
-  </items>
+  <items />
 </S_ITEMS>
